@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<head>
+  <title>Dante's Commedia Video</title>
+</head>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<body onload="onload();">
+    <video id="idle_video" width="1280" height="720" controls autoplay onended="onVideoEnded();"></video>
+    <script>
+        var video_list      = ["Canto01_FINAL.mp4", "Canto05_FINAL.mp4", "Canto28_FINAL.mp4", "Canto34_FINAL.mp4"];
+        var video_index     = 0;
+        var video_player    = null;
+
+        function onload(){
+            console.log("body loaded");
+            video_player        = document.getElementById("idle_video");
+            video_player.setAttribute("src", video_list[video_index]);
+            video_player.play();
+        }
+
+        function onVideoEnded(){
+            console.log("video ended");
+            if(video_index < video_list.length - 1){
+                video_index++;
+            }
+            else{
+                video_index = 0;
+            }
+            video_player.setAttribute("src", video_list[video_index]);
+            video_player.play();
+        }
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var pageReload = false;
+
+      var socket = io('/videos-nampespace');
+      window.onbeforeunload = function() {
+            socket.disconnect(true);
+      };
+
+      function reload() {
+        if (pageReload) {
+          location.reload(true);
+        }
+      }
+
+      socket.on('reload', function(){
+        setTimeout(reload, 20000);
+      });
+
+    </script>
+</body>
+</html>
